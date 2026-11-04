@@ -6,11 +6,27 @@
 
 ---
 
-## ⚡ 现在唯一要做的事
+## 🔀 当前方向：基座迁移到 OpenMinis（2026-11-05 用户决策）
 
-**等 CI 确认 `9a74d0b`（Phase 9 裁剪，149 文件 / -33692 行）构建结果。**
-绿 → 开发阶段完结，只剩验证/发布两项（见下）；
-红 → 带 `GITHUB_TOKEN` 走 API 下载日志定位修复。
+> **ZorvAI 基座全部弃用**（含参考价值），新基座 = [OpenMinis](https://github.com/OpenMinis/OpenMinis)。
+
+| 项 | 结论 |
+|---|---|
+| 新基座源码 | 已落地 `/var/minis/mounts/Ai/OpenMinis`（124MB，src/android 单模块 `:app`，1497 kt / 40 万行，v1.15，compileSdk 36） |
+| 依赖补齐 | ✅ `deps/ish-arm64`(25MB) + `deps/proot`(2.2MB) submodule 已用 codeload 拉取 |
+| 许可证 | ⚠️ **OpenMinis = GPL-3.0**（旧 Anise Write = Apache-2.0）→ 换基座后本项目须改 GPL-3.0 |
+| 工具契约 | `AgentToolDefinition`（结构化参数）← 旧 `QuroTool`（parametersJson 字符串），需写适配层 |
+| 包名/签名 | 倾向沿用 `com.ai.assistance.quro`（待用户最终确认） |
+| 写作域资产 | 32 文件 / 13166 行；**17 文件 / 4509 行零耦合可直接搬**（数据层 / 资料库 / 伏笔图谱 / 记忆双轨 + RRF / 工作流 / 子代理匹配） |
+
+**建议减量移植**（不搬 44 工具）：只搬 6 块真正有价值的——
+① 一致性检查 ② RRF 记忆检索 ③ 润色/去 AI 味 ④ 标题/爽点/水文报告
+⑤ 25 流派预设 + 6 子代理（技能包形态）⑥ 关系图 v2；其余交给 OpenMinis 原生文件工具。
+
+**待确认三决策**（用户 2 分钟未答，默认值仅作参考未执行）：GPL-3.0 接受 / 包名沿用 / 减量移植。
+
+**⚠️ 旧仓库状态**：`c170c5e` 的 CI 失败（Phase 9 裁剪误删 `QuroChatViewModel` 134 行 + `jsonToMap` 丢失），
+若走迁移路线则**该 bug 作废**（旧代码不进新基座）；若保留旧线则需修。
 
 ---
 
@@ -60,4 +76,4 @@
 4. 推送前先 `curl api.github.com` 探网（github.com 时断时续，api 稳定）；
 5. 提交规范 `[Phase N] 模块: 描述`；`feature/penai` 与 `main` 始终同步推。
 
-*最后更新：2026-10-23 · Phase 9 裁剪提交 `9a74d0b` 已推双分支，CI 进行中*
+*最后更新：2026-11-05 · 基座迁移方向确立（OpenMinis），写作域盘点完成（34% 零耦合）*
