@@ -1,1 +1,0 @@
-On-device AI assistant hub with a built-in open-source browser
