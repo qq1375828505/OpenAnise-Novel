@@ -57,6 +57,9 @@ object AgentTools {
         add(FileEditTool.definition())
         // [T-anise-write] 小说写作工具集（从 Anise Write 移植，操作 /var/minis/mounts/ 下的 .txt 章节）
         add(NovelTools.definition())
+        // [T-anise-write] 审读/润色（纯文件项目目录）
+        add(NovelReviewTools.definition())
+        add(NovelPolishTools.definition())
         if (supportsImageInput || visionGroupConfigured) {
             add(ReadImageTool.definition())
         }
