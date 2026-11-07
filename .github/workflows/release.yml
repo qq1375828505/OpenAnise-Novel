@@ -1,0 +1,117 @@
+# ============================================================================
+# OpenAnise-Novel 云端发布（release）
+#
+# 触发：push tag `v*`（如 v1.0.0）→ 产物附带到同名 GitHub Release。
+# 链路：4 Secret 预检 → 与 build.yml 相同的构建环境（JDK17/SDK36/CMake3.22.1/NDK27/
+#       Go1.25 现构 rclone.aar）→ :app:assembleGithubRelease（Gradle 侧仍是 debug 占位签）
+#       → scripts/sign.sh 换成发布密钥重签 + 指纹校验 → gh release 附加。
+#
+# 签名链路沿用旧（ZorvAI）线的设计：Gradle 直签 + scripts/sign.sh 补签；
+# scripts/sign.sh 自 c170c5eb 原样移植，安全逻辑未动。密钥材料不经过 AI、不入库。
+# Secrets 清单与本地复现方式见 scripts/README.md。
+# ============================================================================
+name: release
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    permissions:
+      contents: write     # 创建/上传 Release 必需
+    steps:
+      - name: 检出代码（含 tag）
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 安装 JDK 17（Temurin）
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: 安装 Go 1.25（编 rclone.aar）
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      - name: 安装 Android SDK 组件
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-36" "build-tools;36.0.0" "cmake;3.22.1" "ndk;27.0.12077973" > /dev/null
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> "$GITHUB_ENV"
+
+      - name: 缓存 Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-release-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-release-${{ runner.os }}-
+
+      - name: 安装 Gradle（含依赖/构建缓存）
+        uses: gradle/actions/setup-gradle@v4
+
+      # fail-fast：缺任何一个 Secret 直接失败，不做无谓构建
+      - name: 预检签名 Secrets 并解码密钥库
+        env:
+          ZORV_KEYSTORE_BASE64: ${{ secrets.ZORV_KEYSTORE_BASE64 }}
+          ZORV_KEY_ALIAS: ${{ secrets.ZORV_KEY_ALIAS }}
+          ZORV_STORE_PASS: ${{ secrets.ZORV_STORE_PASS }}
+          ZORV_KEY_PASS: ${{ secrets.ZORV_KEY_PASS }}
+        run: |
+          miss=0
+          for v in ZORV_KEYSTORE_BASE64 ZORV_KEY_ALIAS ZORV_STORE_PASS ZORV_KEY_PASS; do
+            if [[ -z "${!v}" ]]; then echo "::error::缺少 Secret：$v（Settings → Secrets and variables → Actions）"; miss=1; fi
+          done
+          [[ $miss -eq 0 ]] || exit 1
+          mkdir -p "$RUNNER_TEMP/penai-signing"
+          printf '%s' "$ZORV_KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/penai-signing/penai-release.jks"
+          # 变量名与 scripts/lib/common.sh 完全对齐（环境变量优先于 keystore.properties）
+          echo "ZORV_KEYSTORE=$RUNNER_TEMP/penai-signing/penai-release.jks" >> "$GITHUB_ENV"
+
+      - name: 准备 provider-customization.properties
+        run: cp app/provider-customization.properties.example app/provider-customization.properties
+
+      - name: gomobile init
+        run: |
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          gomobile init
+
+      - name: 构建 rclone.aar 并放入 app/libs
+        run: |
+          chmod +x deps/build_rclone_android.sh
+          deps/build_rclone_android.sh
+          mkdir -p app/libs
+          cp deps/build/rclone/rclone.aar app/libs/
+
+      - name: 构建 Release APK（github 风味）
+        run: ./gradlew :app:assembleGithubRelease --stacktrace
+
+      - name: 重签为发布密钥（scripts/sign.sh，幂等 + 指纹校验）
+        run: |
+          chmod +x ./gradlew scripts/sign.sh
+          APK="$(find app/build/outputs/apk -name '*.apk' | grep -vE 'signed|aligned' | head -1)"
+          [[ -n "$APK" ]] || { echo "::error::未找到 Release APK"; exit 1; }
+          scripts/sign.sh "$APK"
+
+      - name: 附加到 GitHub Release
+        run: |
+          SIGNED="$(find app/build/outputs/apk -path '*signed*' -name '*.apk' | head -1)"
+          [[ -n "$SIGNED" ]] || SIGNED="$(find app/build/outputs/apk -name '*.apk' | grep -vE 'signed|aligned' | head -1)"
+          gh release view "${GITHUB_REF_NAME}" >/dev/null 2>&1 || \
+            gh release create "${GITHUB_REF_NAME}" --title "OpenAnise-Novel ${GITHUB_REF_NAME}" --generate-notes
+          gh release upload --clobber "${GITHUB_REF_NAME}" "$SIGNED"
+        env:
+          GH_TOKEN: ${{ github.token }}
