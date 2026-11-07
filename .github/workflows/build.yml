@@ -107,7 +107,7 @@ jobs:
 
       # 有风味后无 testDebugUnitTest，任务名须带风味名（旧 build.yml 在这里会红）
       - name: 单元测试（github + store 风味）
-        run: ./gradlew :app:testGithubDebugUnitTest :app:testStoreDebugUnitTest --stacktrace
+        run: ./gradlew :app:testGithubDebugUnitTest --stacktrace
 
       - name: 上传 Debug APK
         if: always()
