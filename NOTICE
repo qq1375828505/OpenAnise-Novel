@@ -1,7 +1,7 @@
-Anise Write
-Copyright 2025-2026 Anise Write (qq1375828505)
+OpenAnise-Novel
+Copyright 2025-2026 OpenAnise-Novel (qq1375828505)
 
-This product includes software developed by third parties. Anise Write is a
+This product includes software developed by third parties. OpenAnise-Novel is a
 derivative work based on the ZorvAI codebase (see the first section
 below). The upstream source code is provided under the Apache License,
 Version 2.0. Bundled third-party components retain their own licenses,
@@ -14,19 +14,19 @@ obligations.
 UPSTREAM BASE ATTRIBUTION
 ----------------------------------------------------------------------
 
-ZorvAI (upstream base of Anise Write)
+ZorvAI (upstream base of OpenAnise-Novel)
   License: Apache-2.0
   Copyright: 2025-2026 Quro AI
   Source:  https://github.com/Quor-a/ZorvAI
-  Note:    Anise Write is derived from this codebase (web-novel writing AI
+  Note:    OpenAnise-Novel is derived from this codebase (web-novel writing AI
            Agent positioning). All third-party attribution entries of
            the upstream NOTICE are inherited below in full; see
            "ADDITIONAL COMPONENTS" for entries added during the Phase 7a
            license audit.
 
-Anise Write (this application)
+OpenAnise-Novel (this application)
   License: Apache-2.0
-  Source:  https://github.com/qq1375828505/Anise-Write
+  Source:  https://github.com/qq1375828505/OpenAnise-Novel
 
 AndroidX / Jetpack / Jetpack Compose / Material Components
   License: Apache-2.0
@@ -78,7 +78,7 @@ GeckoView (Mozilla)
   License: MPL-2.0 (file-level copyleft; unmodified upstream build, source
            available from Mozilla per MPL-2.0 §3.2)
   Source:  https://maven.mozilla.org/maven2/
-  Note:    Optional built-in browser engine. Per the Anise Write planning
+  Note:    Optional built-in browser engine. Per the OpenAnise-Novel planning
            document §2.7, general rendering can fall back to the system
            WebView; if this dependency is removed in a later phase, this
            entry is removed accordingly.
@@ -358,8 +358,8 @@ DESIGN METHODOLOGY REFERENCE
 OpenMinis (github.com/OpenMinis/OpenMinis)
   License: GPL-3.0
   Source:  https://github.com/OpenMinis/OpenMinis
-  Note:    The Anise Write mobile UI specification
-           (docs/design/AniseWrite_UI_SPEC.md) adopts OpenMinis's
+  Note:    The OpenAnise-Novel mobile UI specification
+           (docs/design/OpenAnise-Novel_UI_SPEC.md) adopts OpenMinis's
            iOS-alignment *methodology* — pixel-measured values from iOS
            reference screenshots, a single-source-of-truth design object,
            measured contrast ratios recorded in comments, and semantic
@@ -367,10 +367,10 @@ OpenMinis (github.com/OpenMinis/OpenMinis)
            (spacing, radii, type scale, color values) were referenced.
            No OpenMinis source code, component implementation, icon
            artwork, or screenshot assets were copied into this repository.
-           All Anise Write UI code is an independent implementation.
+           All OpenAnise-Novel UI code is an independent implementation.
 
 ----------------------------------------------------------------------
-ADDITIONAL COMPONENTS (added by the Anise Write Phase 7a NOTICE audit;
+ADDITIONAL COMPONENTS (added by the OpenAnise-Novel Phase 7a NOTICE audit;
 declared in the build files but missing from the inherited upstream list)
 ----------------------------------------------------------------------
 
@@ -451,7 +451,7 @@ TRADEMARKS
 not grant rights to use these trademarks except as required to describe
 the origin of the software.
 
-"Anise Write" is the project name of this derivative work. This NOTICE does not
+"OpenAnise-Novel" is the project name of this derivative work. This NOTICE does not
 grant rights to use the upstream trademarks above.
 
 ----------------------------------------------------------------------

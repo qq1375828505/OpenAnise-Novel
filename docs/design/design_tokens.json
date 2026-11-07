@@ -1,8 +1,8 @@
 {
   "$name": "anise-write-ios-parity",
   "$version": "1.0.0",
-  "$description": "Anise Write 移动端设计令牌（iOS 对齐范式，方法论参考 OpenMinis）。以 iOS 参考截图为基准逐像素测量；所有数值为唯一真相源，代码必须引用，禁止内联硬编码。单位：dp / sp。",
-  "reference": "docs/design/AniseWrite_UI_SPEC.md",
+  "$description": "OpenAnise-Novel 移动端设计令牌（iOS 对齐范式，方法论参考 OpenMinis）。以 iOS 参考截图为基准逐像素测量；所有数值为唯一真相源，代码必须引用，禁止内联硬编码。单位：dp / sp。",
+  "reference": "docs/design/OpenAnise-Novel_UI_SPEC.md",
   "license": "数值与方法论参考 OpenMinis(GPL-3.0) 的设计范式并独立实现，未复制其代码或素材。",
   "color": {
     "pageBackground": {

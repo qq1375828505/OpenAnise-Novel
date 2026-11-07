@@ -9,6 +9,8 @@
 ## 🔀 当前主任务：基座迁移 ZorvAI → OpenMinis（2026-11-07 进行中）
 
 > **ZorvAI 基座全部弃用**（含参考价值），新基座 = [OpenMinis](https://github.com/OpenMinis/OpenMinis)。
+>
+> **2026-11-07 改名**：Anise Write → **OpenAnise-Novel**（GitHub 仓库名已改，旧名 302 跳转；包名 `com.ai.assistance.quro`、签名、`assets/skills/penai` 资产路径均不变）。
 
 ### 已锁定决策（用户 11-05 授权决定，不再确认）
 

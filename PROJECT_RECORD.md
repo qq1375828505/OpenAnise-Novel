@@ -1,23 +1,23 @@
-# Anise Write · 项目记录（Project Record）
+# OpenAnise-Novel · 项目记录（Project Record）
 
 > **这是项目的权威档案。** 想知道"这是什么、做到哪、接下来做什么"，读这一份就够。
 > 📌 **最新进度（AI 先读）：[PROGRESS.md](./PROGRESS.md)** —— 进度状态以 PROGRESS.md 为准，本文件是技术细节档案。
-> 最后更新：2026-10-23（会话收尾）
-> 配套：[UI 规范](docs/design/AniseWrite_UI_SPEC.md) · [模型组规范](docs/design/ModelGroup_SPEC.md) · [当日交接](docs/progress/HANDOFF_2026-10-23.md) · [验收清单](docs/progress/ACCEPTANCE_CHECKLIST.md)
+> 最后更新：2026-11-07（改名 Anise Write → OpenAnise-Novel）
+> 配套：[UI 规范](docs/design/OpenAnise-Novel_UI_SPEC.md) · [模型组规范](docs/design/ModelGroup_SPEC.md) · [当日交接](docs/progress/HANDOFF_2026-10-23.md) · [验收清单](docs/progress/ACCEPTANCE_CHECKLIST.md)
 
 ---
 
 ## 1. 项目身份
 
-**Anise Write** —— 运行在 Android 上的**端侧网文写作 AI Agent**。
+**OpenAnise-Novel** —— 运行在 Android 上的**端侧网文写作 AI Agent**。
 
 | | |
 |---|---|
 | 基座 | [ZorvAI](https://github.com/Quor-a/ZorvAI) v1.1.7（Kotlin 2.3 + Compose 1.10.2，Apache-2.0） |
 | 领域资产 | novelIDE v2.1.0（Flutter，MIT）——只借鉴信息架构与资产，**不移植代码** |
 | 界面范式 | **完全沿用 Minis（= OpenMinis）界面布局**（GPL-3.0，只取布局与数值，实现独立编写） |
-| 仓库 | `github.com/qq1375828505/Anise-Write`（旧名 PenAi / AniseWrite 均 302 跳转） |
-| 本地 | `/sdcard/Ai/Anise Write`（沙箱 `/var/minis/mounts/Ai/Anise Write`） |
+| 仓库 | `github.com/qq1375828505/OpenAnise-Novel`（旧名 PenAi / AniseWrite / Anise-Write 均 302 跳转） |
+| 本地 | `/sdcard/Ai/Anise Write`（沙箱 `/var/minis/mounts/Ai/Anise Write`，挂载引用中，目录暂不随改名动） |
 | 包名 | `com.ai.assistance.quro`（**刻意不改**：改名 = 857 文件 diff + 应用身份断裂） |
 | 许可 | Apache-2.0；NOTICE 含 ZorvAI 与 novelIDE 归属声明 |
 
@@ -60,7 +60,7 @@ app/src/main/java/com/ai/assistance/quro/
 
 | 决策 | 内容与理由 |
 |---|---|
-| **改名** | PenAi → **Anise Write**。GitHub 仓库名不支持空格（自动转连字符 → Anise-Write）；显示名/应用名/文档用带空格的 "Anise Write" |
+| **改名史** | PenAi →（2026-10-22）Anise Write →（2026-11-07）**OpenAnise-Novel**；GitHub 仓库名不支持空格，显示名/仓库名统一 OpenAnise-Novel；包名与内部标识不变 |
 | **界面范式** | **完全沿用 Minis 界面布局**；前两版（"现代文学出版风"、自创"暗色玻璃"）作废。铁律：新增界面先在 Minis 找对应页面/组件再映射；数值统一在 NovelDesign；Canvas 绘制层不得读 @Composable 状态 |
 | **组件方法论** | 数值取自 Minis 逐像素测量；单一真相源；对比度实测写进注释；语义命名（值才是契约） |
 | **许可边界** | Minis=OpenMinis(GPL-3.0)、novelIDE(MIT)：只取方法论/布局/数值/交互范式，**代码独立编写**，不复制源码素材 |
@@ -116,7 +116,7 @@ app/src/main/java/com/ai/assistance/quro/
 | 类别 | 文档 |
 |---|---|
 | 计划书 | docs/plan-v1.1/plan.md（§6.7 界面、§6.8 关系图、§6.10 模型组） |
-| 设计规范 | docs/design/AniseWrite_UI_SPEC.md（**Minis 组件对照表**）、design_tokens.json、ModelGroup_SPEC.md |
+| 设计规范 | docs/design/OpenAnise-Novel_UI_SPEC.md（**Minis 组件对照表**）、design_tokens.json、ModelGroup_SPEC.md |
 | 进度 | **PROGRESS.md（唯一真相源）** · docs/progress/HANDOFF_2026-10-23.md（当日交接） · ACCEPTANCE_CHECKLIST.md（验收清单）；历史进度文档已清理 |
 | 自述 | README.md |
 

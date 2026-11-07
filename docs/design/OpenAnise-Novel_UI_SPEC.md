@@ -1,4 +1,4 @@
-# Anise Write 界面设计规范 v1
+# OpenAnise-Novel 界面设计规范 v1
 
 > 状态：冻结（Phase 6 实施依据）
 > 设计方法论来源：**OpenMinis**（`github.com/OpenMinis/OpenMinis`）的界面规范范式——iOS 对齐、逐像素测量、单一真相源。
@@ -8,7 +8,7 @@
 
 ## 0. UI 路线（已敲定）：完全沿用 Minis 界面布局
 
-> **决策（用户，2026-10-22）：Anise Write 的界面完全使用 Minis 的界面布局。**
+> **决策（用户，2026-10-22）：OpenAnise-Novel 的界面完全使用 Minis 的界面布局。**
 > 不再自行设计视觉语言——任何新界面**先在 Minis 里找对应页面/组件**，再映射到本项目的实现。
 
 **含义三条**：
@@ -23,7 +23,7 @@ Minis 的布局数值是**从 iOS 参考截图逐像素测量**得来的（OpenM
 本规范的令牌表即取自该测量结果。**改数值时先改本文件的令牌表，再改 `NovelDesignTokens.kt`**，
 两者必须一致。
 
-### 0.2 组件对照表（Minis → Anise Write）
+### 0.2 组件对照表（Minis → OpenAnise-Novel）
 
 | Minis 组件 | 本项目实现 | 关键数值 |
 |---|---|---|
@@ -55,7 +55,7 @@ Minis 的布局数值是**从 iOS 参考截图逐像素测量**得来的（OpenM
 
 ## 0.4 许可边界（重要）
 
-OpenMinis 采用 **GPL-3.0**；Anise Write 采用 **Apache-2.0**（继承自基座 ZorvAI）。
+OpenMinis 采用 **GPL-3.0**；OpenAnise-Novel 采用 **Apache-2.0**（继承自基座 ZorvAI）。
 
 因此本规范**只借鉴三类内容**：
 1. **方法论**——「以 iOS 参考截图为基准逐像素测量」「单一真相源对象」「对比度实测值写进注释」；

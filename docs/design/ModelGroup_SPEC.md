@@ -2,13 +2,13 @@
 
 > 状态：**已实现**（数据层 / UI / 传参透传（⑪）/ 重轻自动路由（P1-5）均已接；剩：真机验证、成员排序拖拽）
 > 决策人：用户，2026-10-22（"全套做" + "放在设置页面，单独，不要放在模型设置子界面"）
-> 界面规范：[AniseWrite_UI_SPEC.md](./AniseWrite_UI_SPEC.md)（完全沿用 Minis 界面布局）
+> 界面规范：[OpenAnise-Novel_UI_SPEC.md](./OpenAnise-Novel_UI_SPEC.md)（完全沿用 Minis 界面布局）
 
 ---
 
 ## 1. 为什么要做
 
-今天（2026-10-22）实测发现：Anise Write 的 **6 个写作子代理 + 全部 novel 工具共用同一个模型**
+今天（2026-10-22）实测发现：OpenAnise-Novel 的 **6 个写作子代理 + 全部 novel 工具共用同一个模型**
 （`NovelWriteSupport.callLlm` 里写死 `model = cfg.model`）。写作场景里各任务对模型的诉求完全不同：
 
 | 任务 | 诉求 | 现状 |
@@ -136,7 +136,7 @@ provider 级故障转移仍由基座 `QuroFailoverManager` 负责，两层职责
 
 ## 6. 许可边界
 
-Minis = OpenMinis，**GPL-3.0**。本项目（Anise Write，Apache-2.0）**只借鉴其方法学与语义**
+Minis = OpenMinis，**GPL-3.0**。本项目（OpenAnise-Novel，Apache-2.0）**只借鉴其方法学与语义**
 （组的概念、意图三选一、钉住优先、显式回落标记、界面布局），**代码独立编写**，
 不复制其 Swift/Kotlin 实现。该声明已写入仓库 `NOTICE` 的 "DESIGN METHODOLOGY REFERENCE" 条目。
 
