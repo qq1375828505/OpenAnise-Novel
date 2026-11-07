@@ -63,6 +63,9 @@ import com.ai.assistance.quro.tools.AgentTools
 import com.ai.assistance.quro.tools.FileEditTool
 import com.ai.assistance.quro.tools.NovelTools
 import com.ai.assistance.quro.tools.NovelPolishTools
+import com.ai.assistance.quro.core.tools.novel.NovelMemoryGraphTool
+import com.ai.assistance.quro.core.tools.novel.NovelMemoryLinkTool
+import com.ai.assistance.quro.core.tools.novel.NovelMemoryTextTool
 import com.ai.assistance.quro.tools.NovelReviewTools
 import com.ai.assistance.quro.tools.FileReadTool
 import com.ai.assistance.quro.tools.FileWriteTool
@@ -14156,6 +14159,10 @@ class ChatViewModel(
             // [T-anise-write] 审读/润色
             NovelReviewTools.NAME -> NovelReviewTools.execute(argsJson, fsSessionId, context)
             NovelPolishTools.NAME -> NovelPolishTools.execute(argsJson, fsSessionId, context)
+            // [T-anise-write] 记忆双轨（不使用 sessionId，形参列表与调度器对齐）
+            NovelMemoryTextTool.NAME -> NovelMemoryTextTool.execute(argsJson, fsSessionId, context)
+            NovelMemoryLinkTool.NAME -> NovelMemoryLinkTool.execute(argsJson, fsSessionId, context)
+            NovelMemoryGraphTool.NAME -> NovelMemoryGraphTool.execute(argsJson, fsSessionId, context)
             // T178: pass sessionId + context so read_image routes through
             // resolveSessionHostPath like file_read/write/edit do — without
             // these, the tool consults the global last-writer-wins
