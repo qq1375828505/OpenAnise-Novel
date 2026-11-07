@@ -417,15 +417,13 @@ object NovelReviewTools {
         return dir.takeIf { it.isDirectory }
     }
 
-    private companion object {
-        const val MIN_TITLE_COUNT = 3
-        const val TITLE_CONTEXT_CHAPTERS = 10
-        const val HUMANIZE_TRANSITION_DENSITY_THRESHOLD = 3.0
-        const val SHUANGDIAN_DENSITY_THRESHOLD = 2.0
-        const val WATER_FILLER_DENSITY_THRESHOLD = 2.0
-        const val WATER_LONG_CHAPTER_FACTOR = 1.6
-        const val WATER_MIN_DIALOGUE_RATIO = 0.15
-    }
+    private const val MIN_TITLE_COUNT = 3
+    private const val TITLE_CONTEXT_CHAPTERS = 10
+    private const val HUMANIZE_TRANSITION_DENSITY_THRESHOLD = 3.0
+    private const val SHUANGDIAN_DENSITY_THRESHOLD = 2.0
+    private const val WATER_FILLER_DENSITY_THRESHOLD = 2.0
+    private const val WATER_LONG_CHAPTER_FACTOR = 1.6
+    private const val WATER_MIN_DIALOGUE_RATIO = 0.15
 }
 
 // ─────────────────────────── 词表与纯文本统计（旧线原样移植） ───────────────────────────
