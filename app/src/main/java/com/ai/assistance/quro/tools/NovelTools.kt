@@ -77,7 +77,11 @@ object NovelTools {
     }
 
     private fun txtFiles(dir: File): List<File> =
-        dir.listFiles()?.filter { it.isFile && it.name.endsWith(".txt") }?.sortedBy { naturalKey(it.name) } ?: emptyList()
+        // sortedBy 要求选择器返回 Comparable<R>；naturalKey 返回 Pair（非 Comparable），
+        // 因此用 compareBy 显式按（编号, 文件名）两键排序。
+        dir.listFiles()?.filter { it.isFile && it.name.endsWith(".txt") }
+            ?.sortedWith(compareBy({ naturalKey(it.name).first }, { naturalKey(it.name).second }))
+            ?: emptyList()
 
     private fun listChapters(project: File, toolTitle: String): ToolExecutionResult {
         val dir = textDir(project)

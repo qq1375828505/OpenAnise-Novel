@@ -1,0 +1,123 @@
+# ============================================================================
+# OpenAnise-Novel 云端构建（build）
+#
+# 基座：OpenMinis（迁移线 minis-migration），替代旧 ZorvAI 时代 build.yml。
+# 触发：push / PR 到 minis-migration、main、feature/**；另开 workflow_dispatch。
+# 内容：JDK 17 + Android SDK 36 / build-tools 36.0.0 / CMake 3.22.1（build.gradle.kts 固定）
+#       / NDK 27.0.12077973（AGP 8.7.3 默认，CMake 原生构建 jieba_jni/pty_bridge/crash_handler）
+#       + Go 1.25（gomobile 现构 rclone.aar，产物不进库）
+#       → Gradle 缓存 → :app:assembleDebug（github + store 两风味）→ 两风味单测 → 上传 artifact
+#
+# 与旧（ZorvAI 时代）build.yml 的差异，见同目录 README.md。
+# 本地不构建（工程红线）：编译与测试统一由本 workflow 在 GitHub runner 完成。
+# ============================================================================
+name: build
+
+on:
+  push:
+    branches: [minis-migration, main, "feature/**", ci-setup, fix-compile]
+  pull_request:
+    branches: [minis-migration, main, "feature/**", ci-setup, fix-compile]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# 同一分支新提交即取消旧任务，避免排队消耗构建分钟
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GRADLE_OPTS: "-Dfile.encoding=UTF-8"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    # 预估：gomobile 编 rclone 约 5 分钟；Gradle 冷缓存约 15~25 分钟（单模块、无 MNN/llama 大 Native）
+    timeout-minutes: 60
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 JDK 17（Temurin）
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: 安装 Go 1.25（编 rclone.aar 用，BUILDING.md 要求 1.25+）
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.25"
+
+      # runner 预装 SDK（cmdline-tools 12.0），直接 sdkmanager 装目标组件。
+      # CMake 版本必须与 app/build.gradle.kts 的 externalNativeBuild.cmake.version 锁定值一致；
+      # NDK 不锁定，取 AGP 8.7.3 默认（27.0.12077973），gomobile init 也读这一个。
+      - name: 安装 Android SDK 组件
+        run: |
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+          yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" \
+            "platforms;android-36" "build-tools;36.0.0" "cmake;3.22.1" "ndk;27.0.12077973" > /dev/null
+          echo "ANDROID_NDK_HOME=$ANDROID_HOME/ndk/27.0.12077973" >> "$GITHUB_ENV"
+
+      - name: 缓存 Gradle 依赖与 wrapper
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle.kts', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: 安装 Gradle（含依赖/构建缓存）
+        uses: gradle/actions/setup-gradle@v4
+
+      # BUILDING.md 的 Android 步骤一：从样例复制（缺省也能编译，但运行期首次用到才炸；
+      # 与上游口径一致，CI 里补上）
+      - name: 准备 provider-customization.properties
+        run: cp app/provider-customization.properties.example app/provider-customization.properties
+
+      - name: gomobile init
+        run: |
+          go install golang.org/x/mobile/cmd/gomobile@latest
+          gomobile init
+
+      # rclone.aar 是构建产物、不入库（上游 settings.gradle.kts 注释原话）。
+      # 脚本输出 deps/build/rclone/rclone.aar，Gradle 从 app/libs/ 读（flatDir）。
+      - name: 构建 rclone.aar 并放入 app/libs
+        run: |
+          chmod +x deps/build_rclone_android.sh
+          deps/build_rclone_android.sh
+          mkdir -p app/libs
+          cp deps/build/rclone/rclone.aar app/libs/
+
+      - name: 确保 gradlew 可执行
+        run: chmod +x ./gradlew
+
+      # 风味为 github/store（dimension=distribution）：assembleDebug 自动构建两风味的 debug 变体
+      - name: 构建 Debug APK（github + store 风味）
+        run: ./gradlew :app:assembleDebug --stacktrace
+
+      # 有风味后无 testDebugUnitTest，任务名须带风味名（旧 build.yml 在这里会红）
+      - name: 单元测试（github + store 风味）
+        run: ./gradlew :app:testGithubDebugUnitTest :app:testStoreDebugUnitTest --stacktrace
+
+      - name: 上传 Debug APK
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openanise-novel-debug-apk
+          path: app/build/outputs/apk/**/*.apk
+          retention-days: 30
+
+      - name: 上传单元测试报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: openanise-novel-unit-test-reports
+          path: |
+            app/build/reports/tests/**
+            app/build/test-results/**
+          retention-days: 30
