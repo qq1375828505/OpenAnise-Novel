@@ -51,6 +51,18 @@
 | 4 | GPL-3.0 换证 | LICENSE/NOTICE/README 许可声明改写 |
 | 5 | 签名 + 发布 | 沿用老签名（4 Secret + tag） |
 
+### 🔧 工程侧缺口与已补齐项（2026-11-07 19:30）
+
+**CI 缺口（待办 #1 卡死的真根因）**：迁移分支曾**没有 `.github/workflows`**（main 也已被 6c4f8f06 清空；上游 OpenMinis 自身无 CI）→ 推分支根本不触发构建。
+→ `ci-setup` 分支已补齐：Go 1.25 gomobile 现构 `rclone.aar`（产物不入库，`deps/rclone-mobile` 595K 已搬）+ 适配新基座的 `build.yml`（触发含 minis-migration；风味 github/store 单测任务名 `testGithubDebugUnitTest`/`testStoreDebugUnitTest`；保留 CMake 3.22.1 + NDK 27；删除 ZorvAI 时代的占位 keystore）。采用：`git merge ci-setup`。**首次编译验证 run 已在 ci-setup 上触发，结论查 Actions 页。**
+
+**产品身份**：全分支 23 个语言包 `app_name` 原本仍是 `Minis`（装出来叫 Minis）。
+→ `polish` 分支已改 `app_name`×23 + `rootProject.name` + 2 处自称注释；包名 `com.ai.assistance.quro`、`minis://` 协议（530 处）、上游标识符（MinisApp/Theme.Minis）与 20 个非中文语言包译文**刻意不动**（保上游可合并）。默认+中文用户文案 228 行（Tier 2）待用户决定。改名脚本：`/sdcard/Ai/Anise Write/rename-to-openanise-novel.sh`（幂等，沙箱挂载可达）。
+
+**release 链缺口（待办 #5 的真相）**：新基座 `release` 变体签的是 **debug key**（`signingConfig = signingConfigs.getByName("debug")`），且缺三样：release signingConfig + keystore.properties 机制、`scripts/sign.sh`（ZorvAI 资产，未迁）、`release.yml`。4 个 Secret 名见 `.github/workflows/README.md`（build 一个都不需要）。
+
+**文档**：仓库改名 `Anise-Write` → **`OpenAnise-Novel`**（旧名 302 跳转）；`polish` 分支新增新基座 README 与 AGENTS.md（签名红线/工程铁律/基座边界）。
+
 ### 旧仓库（ZorvAI 线）状态——**冻结，不再修**
 
 - HEAD = `c170c5e`，CI 失败根因已定位：Phase 9 裁剪误删 `QuroChatViewModel` 134 行 + `jsonToMap` 丢失 + `QuroTool.kt` 返回值没改完。
@@ -88,4 +100,4 @@
 6. **不写会话记忆**（用户已关闭）；进度只落 PROGRESS.md；
 7. 提交规范 `[Phase N] 模块: 描述`；`feature/penai` 与 `main` 始终同步推。
 
-*最后更新：2026-11-07 · 基座迁移进行中：NovelTools 首块已落地并注册，待 CI 编译验证后继续剩 5 块*
+*最后更新：2026-11-07 19:30 · 基座迁移进行中（NovelTools 首块已落地）；CI 缺口已补（ci-setup 分支，首跑验证中）；产品身份改名已备（polish 分支）；剩 5 块移植 + release 链三项待补*
