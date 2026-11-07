@@ -15,9 +15,9 @@ name: build
 
 on:
   push:
-    branches: [minis-migration, main, "feature/**"]
+    branches: [minis-migration, main, "feature/**", ci-setup]
   pull_request:
-    branches: [minis-migration, main, "feature/**"]
+    branches: [minis-migration, main, "feature/**", ci-setup]
   workflow_dispatch:
 
 permissions:
