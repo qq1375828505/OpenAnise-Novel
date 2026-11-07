@@ -100,4 +100,13 @@
 6. **不写会话记忆**（用户已关闭）；进度只落 PROGRESS.md；
 7. 提交规范 `[Phase N] 模块: 描述`；`feature/penai` 与 `main` 始终同步推。
 
-*最后更新：2026-11-07 19:30 · 基座迁移进行中（NovelTools 首块已落地）；CI 缺口已补（ci-setup，首跑验证中）；改名已备（polish）；release 链已搭（release-chain：签名四件套移植 + release.yml，只差配 Secret 打 tag）；剩 5 块领域移植*
+### 🧭 会话交接与平台机制备忘（2026-11-07 22:50）
+
+- **上下文压缩（已更正早前误判）**：平台自带 `dsh-compaction-basic`（**自动**：逼近模型上下文上限即把最旧历史压成摘要；上下文溢出报错后先压再重试）+ `dsh-command-compact`（聊天输入 `/compact` **手动**压，报告压缩条数与省下的 token）。限制：压不掉系统提示词/工具/会话前缀，单条超大工具输出拆不碎。
+- **跨会话记忆：平台无**（331 个 @deepseek-ai 包里没有 memory/remember 类）。状态外置 = 本文件 + 项目 AGENTS.md + 交接文件 **`/sdcard/Ai/HANDOFF-OpenAnise-Novel.md`（新会话 AI 先读它）**。
+- **子代理模型分流**：App「子代理→运行限制」页 21:47 保存的 allowedModels（`custom-a/minimaxai/minimax-m3.1-flash`、`custom-a/z-ai/glm-5.3-flash`）**只在新会话创建时写入**；该时刻之后的会话可用 subagent 工具显式分流模型；`spawn_teammate` 不带模型参数，成员只能继承父路由。
+- **CI 第 5 轮**：`fix-compile@a53b065` = Kotlin 2.1.0→2.1.20 + KSP 2.1.20-1.0.31（KSP1 线，Room 2.6.1 无碍），修上游 SpeechOffloadHandler.providerFromMic 的 K2 后段崩溃（`when(val capture=...)` 智能转换；上游无 CI 从未触发）。
+- **待集成半成品**：`/tmp/port/memory`（6 文件 1342 行：记忆双轨+RRF+图谱）、`/tmp/port/writing`（3 文件 1002 行：审读/润色/去AI味）；`/tmp/port/skills`、`/tmp/port/graph-ui` 为空。
+- **剩余 4 块缺口**：一致性检查、关系图 v2（→ /tmp/port/graph-ui）、25 流派+6 子代理技能包（→ /tmp/port/skills，注意落 Minis SKILL.md 机制）、报告类（标题/爽点/水文）。
+
+*最后更新：2026-11-07 22:50 · 基座迁移进行中（NovelTools 首块已落地）；CI 缺口已补（ci-setup，首跑验证中）；改名已备（polish）；release 链已搭（release-chain：签名四件套移植 + release.yml，只差配 Secret 打 tag）；剩 5 块领域移植*
