@@ -109,8 +109,10 @@
 - **CI 第 6 轮**（11-08 凌晨）：`af85ff2` = gradle.properties 内存三件套（Gradle jvm -Xmx3g + MaxMetaspace 1g、Kotlin daemon -Xmx3g、workers 2；原堆仅 2g 是 OOM 根因）→ **`:app:assembleDebug` 首次全绿（42 tasks，编译链通过）**；挂在 build.yml 引用不存在的 `testStoreDebugUnitTest`（上游 `beforeVariants` 禁用 store 非 release 变体，task 不生成）。
 - **CI 第 7 轮**：`eb381bf` = build.yml 删掉不存在的 testStoreDebugUnitTest → 挂**上游测试源码编译**：`app/src/test` 的 `com/openminis/app` 包在 Kotlin 2.1.20 下 9 错 5 文件（`similar`/`keySet` unresolved + internal 可见性暴露；上游无 CI 从未暴露），测试适配另立任务。
 - **CI 第 8 轮**：`585fc4a` = build.yml 注释单测步骤（先保 assembleDebug 主链绿，测试适配后恢复），跑中。
+- **writing 块集成（11-08）**：run #95 红（NovelReviewTools.kt:420 companion 误用于 standalone object）→ 常量提升修复 → **run #96 绿**。novel_review/novel_polish 已注册进 AgentTools + ChatViewModel（Git Data API 走通 1.17MB 大文件）。
+- **数据层+memory 集成（11-08）**：查明「17 数据层文件」从未进过远端（只在沙箱工作树）；用户确认 = ref-old c170c5eb 原版 → run #113 **绿**：落地数据层 9 文件（NovelModels/Repository/asset×2/GraphStore/NovelMemoryStore/**NovelAnalyzer 一致性主体**/workflow×2）+ memory 6 文件 + novel_memory_text/link/graph 三工具注册，6 工具 add 各 1 次复核无重复。
 - **半成品静态审查完成（11-08 凌晨）**：memory 6 文件 + writing 3 文件全部通过静态审查，逐文件结论在 `/tmp/port/REPORT.md`；9 文件已按新树相对路径放 `/tmp/port/ready/`（唯一编译炸点 NovelMemoryGraphTools.kt:15 错包名 import 已修）；注册点已定位：AgentTools.kt:59 后加 5 个 add、ChatViewModel.kt:64 后加 5 个 import、:14153 后加 5 个 when 分支。writing 块无前置依赖可先集成；memory 块依赖 17 已完成文件（GraphStore/NovelMemoryStore 必须在树）。
 - **待集成半成品**：`/tmp/port/memory`（6 文件 1342 行：记忆双轨+RRF+图谱）、`/tmp/port/writing`（3 文件 1002 行：审读/润色/去AI味）；`/tmp/port/skills`、`/tmp/port/graph-ui` 为空。
-- **剩余 4 块缺口**：一致性检查（主体 NovelAnalyzer 不在 9 文件中，数据底座 ChapterRef/NovelHook 已备）、关系图 v2（→ /tmp/port/graph-ui）、25 流派+6 子代理技能包（→ /tmp/port/skills，注意落 Minis SKILL.md 机制）、报告类（标题/爽点/水文，半成品已就绪待集成）。
+- **剩余 2 块缺口**：关系图 v2 界面（数据层 GraphStore 已在树，Canvas/交互层未移植）、25 流派+6 子代理技能包（旧线 assets/skills 109 资产在 ref-old，需适配 Minis SKILL.md 机制）。一致性检查/记忆检索/润色/报告类四块已落地（run #96、#113 绿）。
 
-*最后更新：2026-11-08 00:20 · CI 修复链：第 6 轮内存参数后 assembleDebug 首绿，第 8 轮保主链绿跑中；memory+writing 半成品审查完成、/tmp/port/ready 九文件就绪待集成；剩 4 块领域移植（一致性检查主体 NovelAnalyzer 待移植）*
+*最后更新：2026-11-08 05:00 · 6 块移植 4 块落地（一致性/记忆/润色/报告，run #96 #113 全绿，NovelAnalyzer 随数据层入树）；剩关系图 UI 与技能包；四分支合并清单已出（docs/progress/MERGE_PLAN_2026-11-08.md）待执行*
