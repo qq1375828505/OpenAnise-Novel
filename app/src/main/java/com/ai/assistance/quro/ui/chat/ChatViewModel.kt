@@ -62,6 +62,8 @@ import com.ai.assistance.quro.terminal.MinisUrlMarker
 import com.ai.assistance.quro.tools.AgentTools
 import com.ai.assistance.quro.tools.FileEditTool
 import com.ai.assistance.quro.tools.NovelTools
+import com.ai.assistance.quro.tools.NovelPolishTools
+import com.ai.assistance.quro.tools.NovelReviewTools
 import com.ai.assistance.quro.tools.FileReadTool
 import com.ai.assistance.quro.tools.FileWriteTool
 import com.ai.assistance.quro.tools.MemoryTools
@@ -14151,6 +14153,9 @@ class ChatViewModel(
             }
             // [T-anise-write] 小说写作工具集：操作 /var/minis/mounts/ 下的 .txt 章节
             NovelTools.NAME -> NovelTools.execute(argsJson, fsSessionId, context)
+            // [T-anise-write] 审读/润色
+            NovelReviewTools.NAME -> NovelReviewTools.execute(argsJson, fsSessionId, context)
+            NovelPolishTools.NAME -> NovelPolishTools.execute(argsJson, fsSessionId, context)
             // T178: pass sessionId + context so read_image routes through
             // resolveSessionHostPath like file_read/write/edit do — without
             // these, the tool consults the global last-writer-wins
