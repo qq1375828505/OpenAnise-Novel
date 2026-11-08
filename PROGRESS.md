@@ -145,6 +145,13 @@
 | `res/values[-zh]/strings_novel_graph.xml` | 12 条中英双语资源 |
 | `SettingsScreen.kt` / `AppNavigation.kt` | 入口：设置 › Agent Runtime 组末新增「关系图」行（图标 `Icons.Outlined.GraphicEq`，仓中有先例）→ `Routes.NOVEL_GRAPH` |
 
-**落地方式**：Git Data API 建 blob→base_tree 增量 tree→commit→update ref（本机 git 443 不通，见上文网络结论）。静态自检已过：括号配平、无未使用 import、中英 key 集合一致、全部依赖 API 在仓中有先例（`SettingsSection(header/footer)`、`SettingsRow(...)`、`TopAppBarDefaults.topAppBarColors`、`material-icons-extended` 已依赖）。
+**落地方式**：Git Data API 建 blob→base_tree 增量 tree→commit→update ref（本机 git 443 不通，见上文网络结论）。
+
+**CI 第 1 轮失败 → 已修（`a30fa2e` 红 → `1af6dbc`）**，三条教训：
+1. **静态「未使用 import」检测会误判委托**：`var x by remember` 的属性委托语法在源码里不出现 `getValue`/`setValue` 字面量，但编译期必须有 `androidx.compose.runtime.getValue/setValue` 两个 import。静态扫描后必须**按 `by remember` 出现次数反查**，不能按字面量判断。
+2. **优先用本仓有先例的 API 面**：`DrawScope.drawText(textLayoutResult = …)` 全仓无先例、签名跨版本有变动，改走「标签在布局层」（`Box` + `Modifier.offset` + `Text`），Canvas 只画线/圆。**本地不能编译时，先例 = 编译保险**。
+3. **分支名必须在 workflow 触发名单内**：`build.yml` 的 `on.push.branches = [minis-migration, main, feature/**, ci-setup, fix-compile]`，平级分支名 `graph-v2-ui` 不触发任何 CI（静默无 run，不是绿）。已改名为 `feature/graph-v2-ui`。
+
+**分支命名约定（新增铁律候选）**：新工作分支一律 `feature/<name>`，否则 CI 不跑、误以为已验。
 
 *最后更新：2026-11-08 15:15 · 关系图 v2 UI 已按「Minis 持平」路线落地并推 `graph-v2-ui`（`a30fa2e`），CI 结果待回；6 块移植 5 块已动工（关系图），剩技能包待用户决策 D1–D6*
