@@ -58,7 +58,7 @@ object AgentTools {
         add(FileReadTool.definition())
         add(FileWriteTool.definition())
         add(FileEditTool.definition())
-        // [T-anise-write] 小说写作工具集（从 Anise Write 移植，操作 /var/minis/mounts/ 下的 .txt 章节）
+        // [T-anise-write] 小说写作工具集（从 Anise Write 迁移，现名 OpenAnise-Novel，操作 /var/minis/mounts/ 下的 .txt 章节）
         add(NovelTools.definition())
         // [T-anise-write] 审读/润色（纯文件项目目录）
         add(NovelReviewTools.definition())

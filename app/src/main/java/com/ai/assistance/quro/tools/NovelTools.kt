@@ -8,7 +8,7 @@ import org.json.JSONObject
 import java.io.File
 
 /**
- * Anise Write 小说写作工具集 —— 基于 OpenMinis 原生工具契约。
+ * OpenAnise-Novel 小说写作工具集 —— 基于 OpenMinis 原生工具契约。
  *
  * 直接读写 `/var/minis/mounts/<name>/` 挂载目录下的小说项目（纯文本 .txt 章节），
  * 不依赖旧 ZorvAI 的 `QuroTool` 契约和 Android 私有存储。
