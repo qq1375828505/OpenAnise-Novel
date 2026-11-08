@@ -115,4 +115,19 @@
 - **待集成半成品**：`/tmp/port/memory`（6 文件 1342 行：记忆双轨+RRF+图谱）、`/tmp/port/writing`（3 文件 1002 行：审读/润色/去AI味）；`/tmp/port/skills`、`/tmp/port/graph-ui` 为空。
 - **剩余 2 块缺口**：关系图 v2 界面（数据层 GraphStore 已在树，Canvas/交互层未移植）、25 流派+6 子代理技能包（旧线 assets/skills 109 资产在 ref-old，需适配 Minis SKILL.md 机制）。一致性检查/记忆检索/润色/报告类四块已落地（run #96、#113 绿）。
 
-*最后更新：2026-11-08 05:00 · 6 块移植 4 块落地（一致性/记忆/润色/报告，run #96 #113 全绿，NovelAnalyzer 随数据层入树）；剩关系图 UI 与技能包；四分支合并清单已出（docs/progress/MERGE_PLAN_2026-11-08.md）待执行*
+### ✅ 四分支合并完成（2026-11-08 09:00–09:30 · 服务端 merge API）
+
+| 步 | 合并 | 结果 | CI |
+|---|---|---|---|
+| 1 | `polish` → `fix-compile` | `5a7cc40` 零冲突 | 绿 |
+| 2 | `release-chain` → `fix-compile` | `1dfdbe0` 零冲突 | 绿 |
+| 3 | `ci-setup` → `fix-compile` | `33ec3f4` 唯一真冲突 = `build.yml`（add/add），以 fix-compile 实测版为准；其余 58 文件两侧 blob sha 一致 | 绿 |
+| 4 | `fix-compile` → `minis-migration` | `a99c5e5` fast-forward | 绿 |
+| 5 | `minis-migration` → `main` | `64d45a6` **main 由文档态转完整态** | 绿 |
+
+- **main 合并处置**：基底 = minis-migration 完整树（2279 blob）；main 独有文档资产全部保留（PROGRESS/PROJECT_RECORD/README.en/LICENSE/NOTICE/PERMISSIONS/ENGINEERING_CONVENTIONS + docs/** 设计书与计划书）；`.gitignore` 取 main 完整版（保留 `*.jks/*.keystore/*.p12/keystore.properties` 全部密钥忽略）并补入 minis 侧 `app/libs/rclone.aar`；`AGENTS.md` 取新基座版（DSH 实际加载规则）；`README.md` 取 main 完整版与 README.en.md 配套。
+- **环境重建完成（重装后）**：`/root/.dsh/github-token`(600) + `~/.git-credentials`(store helper) + `/usr/local/bin/ghtok`（读 token 不回显）+ `/usr/local/bin/gitm`（ghproxy 镜像，只读加速）。
+- **本机网络结论**：`api.github.com` / `codeload.github.com` / `registry.npmmirror.com` 通；**`github.com` 的 git HTTPS(443) 被阻断**（TLS 非正常终止），ghproxy 镜像 clone/fetch 亦失败（partial clone 不支持 + 连接重置）→ 所有读写走 **API**（merges / Git Data / Contents），本地 clone 用 codeload tarball。
+- **技能包移植方案已出**：[SKILL_PORTING_PLAN_2026-11-08.md](./SKILL_PORTING_PLAN_2026-11-08.md)（37 文件清点、新旧机制 6 项差异、B0–B5 分批约 9 人天、R1–R9 风险）。**下一步需用户先决策 D1–D6**（流派 ASCII id 方案、默认开关、6 子代理形态、规约强制力补偿、persona 归属等）。
+
+*最后更新：2026-11-08 09:35 · **四分支合并全部完成、CI 全绿，main 已是完整态**（代码+文档齐备）；6 块移植仍 4 块落地，剩关系图 v2 UI 与技能包（技能包方案待用户决策 D1–D6 后开工）；本地工作树 git 已重建并与远端内容一致（3 个新文档已推送）*
