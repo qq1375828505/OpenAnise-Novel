@@ -1,6 +1,6 @@
 package com.ai.assistance.quro.ui.novel
 
-import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.isSystemInLightTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -66,17 +66,23 @@ val NovelTextTertiary: Color
 val NovelAccent: Color
     @Composable @ReadOnlyComposable get() = MaterialTheme.colorScheme.primary
 
-/** 伏笔已回收、章节完成。 */
+/**
+ * 伏笔已回收、章节完成（design_tokens.json §2.3 success：亮 #34C759 / 暗 #30D158）。
+ * 不挪用 Material 的 tertiary——那在本基座是蓝系（#46617A），会把「完成」读成「信息」。
+ */
 val NovelSuccess: Color
-    @Composable @ReadOnlyComposable get() = MaterialTheme.colorScheme.tertiary
+    @Composable @ReadOnlyComposable get() = if (isDark) Color(0xFF30D158) else Color(0xFF34C759)
 
-/** 字数偏低、爽点不足。 */
+/** 字数偏低、爽点不足（§2.3 warning：#FF9F0A 亮暗同值）。 */
 val NovelWarning: Color
-    @Composable @ReadOnlyComposable get() = MaterialTheme.colorScheme.secondary
+    @Composable @ReadOnlyComposable get() = Color(0xFFFF9F0A)
 
-/** 删除、失败、冲突。 */
+/** 删除、失败、冲突（§2.3 danger：亮 #FF3B30 / 暗 #FF453A）。 */
 val NovelDanger: Color
-    @Composable @ReadOnlyComposable get() = MaterialTheme.colorScheme.error
+    @Composable @ReadOnlyComposable get() = if (isDark) Color(0xFFFF453A) else Color(0xFFFF3B30)
+
+private val isDark: Boolean
+    @Composable @ReadOnlyComposable get() = !isSystemInLightTheme()
 
 /**
  * 关系类别调色板（design_tokens.json §color.categoryPalette）。
@@ -184,8 +190,3 @@ object NovelGraphTokens {
     /** 固定迭代上限：防小屏几十节点时无限紊流。 */
     const val SIM_MAX_ITERATIONS: Int = 600
 }
-
-/** 主题明暗查询：供画布做一次性取值，不在绘制块里读 Composable 状态（§0.3 禁令）。 */
-@Composable
-@ReadOnlyComposable
-fun novelIsDarkTheme(): Boolean = isSystemInDarkTheme()
