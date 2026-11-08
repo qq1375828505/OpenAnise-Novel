@@ -182,3 +182,6 @@ browser_act_test_prompt.md
 # Python 字节码缓存（4fd0c78 误提交过一批）
 __pycache__/
 *.pyc
+
+# CI 现构产物，不入库（自 minis/ci-setup 侧并入，见 [T-merge] ci-setup）
+app/libs/rclone.aar
