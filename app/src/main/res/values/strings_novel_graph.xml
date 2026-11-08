@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 小说关系图（Phase 6 关系图 v2 · UI_SPEC §5.8） -->
+    <string name="novel_graph_title">Relationship Graph</string>
+    <string name="novel_graph_settings_row">Relationship Graph</string>
+    <string name="novel_graph_settings_row_subtitle">Character relationships of a work, force-directed</string>
+    <string name="novel_graph_pick_work">Pick a work</string>
+    <string name="novel_graph_pick_work_footer">The graph shows the relationships recorded for that work.</string>
+    <string name="novel_graph_no_works_title">No works yet</string>
+    <string name="novel_graph_no_works_body">Create a work in the writing tools first; relationships appear here once you add them.</string>
+    <string name="novel_graph_work_subtitle">%1$d chapters · %2$d relationships</string>
+    <string name="novel_graph_stats">%1$d characters · %2$d relationships</string>
+    <string name="novel_graph_node_no_relations">This character has no recorded relationships.</string>
+    <string name="novel_graph_relation_item">%1$s · %2$s · strength %3$d</string>
+    <string name="novel_graph_relation_more">+%1$d more</string>
+    <string name="novel_graph_canvas_empty">No relationships yet</string>
+    <string name="novel_graph_canvas_single">Only one character, nothing to connect</string>
+    <string name="novel_graph_settings_back">Back</string>
+
+</resources>

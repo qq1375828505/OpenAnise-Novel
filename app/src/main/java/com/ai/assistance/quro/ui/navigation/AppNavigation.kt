@@ -218,6 +218,8 @@ object Routes {
     // [T-android-scheduled-tasks-run-records] per-task execution log.
     const val SCHEDULED_TASK_RUNS = "scheduled_tasks/runs/{taskId}"
     fun scheduledTaskRuns(taskId: String): String = "scheduled_tasks/runs/$taskId"
+    /** [T-novel-graph-v2] 小说关系图（Phase 6 v2）：作品列表 → 力导向画布。 */
+    const val NOVEL_GRAPH = "novel_graph"
 
     fun logDetail(fileName: String) = "log_detail/$fileName"
     fun configAuditDetail(auditId: String) = "config_audit_detail/$auditId"
@@ -670,6 +672,7 @@ fun AppNavigation(
                 onAboutClick = { navController.safeNavigate(Routes.ABOUT) },
                 onMountedFoldersClick = { navController.safeNavigate(Routes.MOUNTED_FOLDERS) },
                 onSharedFoldersClick = { navController.safeNavigate(Routes.SHARED_FOLDERS) },
+                onNovelGraphClick = { navController.safeNavigate(Routes.NOVEL_GRAPH) },
             )
         }
 
@@ -1431,6 +1434,15 @@ fun AppNavigation(
         // [T-soul-md] SOUL.md editor.
         composable(Routes.SOUL) {
             com.ai.assistance.quro.ui.settings.SoulSettingsScreen(
+                onBack = { navController.safePopBackStack() },
+            )
+        }
+
+        // [T-novel-graph-v2] 小说关系图（Phase 6 v2）。无仓库依赖：
+        // 页面自己从 NovelRepository / GraphStore 按 context 读，与
+        // Minecraft 型仓库注入解耦，缺作品时给引导空态而非崩。
+        composable(Routes.NOVEL_GRAPH) {
+            com.ai.assistance.quro.ui.novel.NovelRelationshipGraphScreen(
                 onBack = { navController.safePopBackStack() },
             )
         }

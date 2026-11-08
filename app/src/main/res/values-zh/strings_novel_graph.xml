@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- 小说关系图（Phase 6 关系图 v2 · UI_SPEC §5.8） -->
+    <string name="novel_graph_title">关系图</string>
+    <string name="novel_graph_settings_row">关系图</string>
+    <string name="novel_graph_settings_row_subtitle">按作品看人物关系，力导向布局</string>
+    <string name="novel_graph_pick_work">选择作品</string>
+    <string name="novel_graph_pick_work_footer">这里只显示该作品已登记的关系。</string>
+    <string name="novel_graph_no_works_title">还没有作品</string>
+    <string name="novel_graph_no_works_body">先在写作工具里建作品并登记人物关系后，这里就会显示。</string>
+    <string name="novel_graph_work_subtitle">%1$d 章 · %2$d 条关系</string>
+    <string name="novel_graph_stats">%1$d 位人物 · %2$d 条关系</string>
+    <string name="novel_graph_node_no_relations">这个人物还没有登记关系。</string>
+    <string name="novel_graph_relation_item">%1$s · %2$s · 强度 %3$d</string>
+    <string name="novel_graph_relation_more">还有 %1$d 条</string>
+    <string name="novel_graph_canvas_empty">还没有关系数据</string>
+    <string name="novel_graph_canvas_single">只有一位人物，暂无关系可显示</string>
+    <string name="novel_graph_settings_back">返回</string>
+
+</resources>

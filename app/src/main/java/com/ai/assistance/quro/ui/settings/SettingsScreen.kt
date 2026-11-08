@@ -105,6 +105,9 @@ fun SettingsScreen(
     // Agent Runtime section; default no-op for callers that haven't wired
     // the route yet.
     onSoulClick: () -> Unit = {},
+    // [T-novel-graph-v2] Phase 6 关系图 v2 入口（写作域）。默认 no-op，
+    // 未接路由的调用方（预览 / 旧调用点）不受影响。
+    onNovelGraphClick: () -> Unit = {},
     onPermissionsClick: () -> Unit = {},
     onUsageClick: () -> Unit = {},
     onAppearanceClick: () -> Unit = {},
@@ -254,6 +257,16 @@ fun SettingsScreen(
                     title = stringResource(R.string.settings_env_vars),
                     subtitle = stringResource(R.string.settings_env_vars_subtitle),
                     onClick = onEnvVarsClick,
+                )
+                // [T-novel-graph-v2] 写作域的关系图入口。放在 Agent Runtime
+                // 组末（该组从「智能体能做什么」排到「它由什么构成」再到「连什么」），
+                // 关系图属写作域的可见产物，不收进 Storage。
+                SettingsItem(
+                    icon = Icons.Outlined.GraphicEq,
+                    iconColor = Color(0xFF4C8DF6),
+                    title = stringResource(R.string.novel_graph_settings_row),
+                    subtitle = stringResource(R.string.novel_graph_settings_row_subtitle),
+                    onClick = onNovelGraphClick,
                     showDivider = false,
                 )
             }
