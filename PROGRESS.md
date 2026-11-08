@@ -130,4 +130,21 @@
 - **本机网络结论**：`api.github.com` / `codeload.github.com` / `registry.npmmirror.com` 通；**`github.com` 的 git HTTPS(443) 被阻断**（TLS 非正常终止），ghproxy 镜像 clone/fetch 亦失败（partial clone 不支持 + 连接重置）→ 所有读写走 **API**（merges / Git Data / Contents），本地 clone 用 codeload tarball。
 - **技能包移植方案已出**：[SKILL_PORTING_PLAN_2026-11-08.md](./SKILL_PORTING_PLAN_2026-11-08.md)（37 文件清点、新旧机制 6 项差异、B0–B5 分批约 9 人天、R1–R9 风险）。**下一步需用户先决策 D1–D6**（流派 ASCII id 方案、默认开关、6 子代理形态、规约强制力补偿、persona 归属等）。
 
-*最后更新：2026-11-08 09:35 · **四分支合并全部完成、CI 全绿，main 已是完整态**（代码+文档齐备）；6 块移植仍 4 块落地，剩关系图 v2 UI 与技能包（技能包方案待用户决策 D1–D6 后开工）；本地工作树 git 已重建并与远端内容一致（3 个新文档已推送）*
+### 🔨 关系图 v2 UI 开工（2026-11-08 14:30–15:10 · 分支 `graph-v2-ui`，commit `a30fa2e`）
+
+> **用户定调（13:39）**：「关系图必须 minis 持平，不用旧 ui 方案」——即严格执行
+> [OpenAnise-Novel_UI_SPEC.md §0](./design/OpenAnise-Novel_UI_SPEC.md)「完全沿用 Minis 界面布局」，
+> 旧线 `ui/novel` 5 文件只作数据契约参考，视觉与交互按 §5.8 / §8.5 重写。
+
+| 文件 | 作用 |
+|---|---|
+| `ui/novel/NovelDesign.kt` | 设计令牌单一真相源：颜色走 MaterialTheme 的 iOS 分组表面（page/card/outline）、节奏/字阶对齐 `design_tokens.json`；关系图专属令牌（节点直径 56dp、强度 1-5→边宽 1-4dp、邻边高亮 alpha、6dp 光晕）集中一处，Composable 禁裸 dp |
+| `ui/novel/GraphLayoutEngine.kt` | 纯 Kotlin 斥力物理（Fruchterman-Reingold 变体：全对斥力 + 边引力 + 弱向心 + 阻尼 + 固定迭代上限），零 Compose 依赖可单测；数据层人物名为天然主键故节点 id 即人名 |
+| `ui/novel/RelationshipGraphCanvas.kt` | Canvas 绘制：节点 = cardSurface 圆 + 1dp outline 描边 + 角色色外圈；边类别色 + 60% 不透明度，选中节点邻边升 100% + 6dp 模糊光晕；拖拽平移、双指缩放 0.4–3x、点选高亮；绘制块不读 Composable 状态（§0.3） |
+| `ui/novel/NovelRelationshipGraphScreen.kt` | 两级结构：作品列表（复用 `SettingsSection`/`SettingsRow`，不发明新视觉语言）→ 力导向画布 + 底部详情面板；数据 = `GraphStore.listRelationships(workId)`，节点取关系端点人名并集，边按 (from,to) 去重 |
+| `res/values[-zh]/strings_novel_graph.xml` | 12 条中英双语资源 |
+| `SettingsScreen.kt` / `AppNavigation.kt` | 入口：设置 › Agent Runtime 组末新增「关系图」行（图标 `Icons.Outlined.GraphicEq`，仓中有先例）→ `Routes.NOVEL_GRAPH` |
+
+**落地方式**：Git Data API 建 blob→base_tree 增量 tree→commit→update ref（本机 git 443 不通，见上文网络结论）。静态自检已过：括号配平、无未使用 import、中英 key 集合一致、全部依赖 API 在仓中有先例（`SettingsSection(header/footer)`、`SettingsRow(...)`、`TopAppBarDefaults.topAppBarColors`、`material-icons-extended` 已依赖）。
+
+*最后更新：2026-11-08 15:15 · 关系图 v2 UI 已按「Minis 持平」路线落地并推 `graph-v2-ui`（`a30fa2e`），CI 结果待回；6 块移植 5 块已动工（关系图），剩技能包待用户决策 D1–D6*
