@@ -105,11 +105,11 @@ jobs:
       - name: 构建 Debug APK（github + store 风味）
         run: ./gradlew :app:assembleDebug --stacktrace
 
-      # 有风味后无 testDebugUnitTest，任务名须带风味名（旧 build.yml 在这里会红）
-      # 暂停单测：上游测试源码（app/src/test 的 com/openminis/app 包）在 Kotlin 2.1.20 下编译不过
-      # （similar/keySet unresolved + internal 暴露，9 错 5 文件），适配另立任务，先保 assembleDebug 主链绿。
-      # - name: 单元测试（github + store 风味）
-      #   run: ./gradlew :app:testGithubDebugUnitTest --stacktrace
+      # 有风味后无 testDebugUnitTest，任务名须带风味名（旧 build.yml 在这里会红）。
+      # 单测步骤曾因上游测试源码在 Kotlin 2.1.20 下编译不过而暂停，现已重新打开，
+      # 用 CI 的编译输出定位真实错误并逐个适配（见 docs/progress/）。
+      - name: 单元测试（github + store 风味）
+        run: ./gradlew :app:testGithubDebugUnitTest --stacktrace
 
       - name: 上传 Debug APK
         if: always()
