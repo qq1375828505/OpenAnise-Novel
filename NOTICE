@@ -2,9 +2,11 @@ OpenAnise-Novel
 Copyright 2025-2026 OpenAnise-Novel (qq1375828505)
 
 This product includes software developed by third parties. OpenAnise-Novel is a
-derivative work based on the ZorvAI codebase (see the first section
-below). The upstream source code is provided under the Apache License,
-Version 2.0. Bundled third-party components retain their own licenses,
+derivative work based on the **OpenMinis** codebase (see the first section
+below). The combined application is released under the **GNU General Public
+License version 3** (see ./LICENSE) because the application code is a
+derivative of OpenMinis (GPL-3.0); it was re-based from ZorvAI onto OpenMinis
+on 2026-11-07. Bundled third-party components retain their own licenses,
 summarized below. Where a component is distributed under a copyleft
 license (GPL / LGPL / MPL / EPL), the corresponding source is made
 available alongside this repository in accordance with that license's
@@ -14,18 +16,31 @@ obligations.
 UPSTREAM BASE ATTRIBUTION
 ----------------------------------------------------------------------
 
-ZorvAI (upstream base of OpenAnise-Novel)
+OpenMinis (direct upstream base of OpenAnise-Novel)
+  License: GPL-3.0
+  Copyright: OpenMinis contributors
+  Source:  https://github.com/OpenMinis/OpenMinis
+  Note:    OpenAnise-Novel is derived from this codebase (web-novel writing AI
+           Agent positioning). Because OpenMinis is GPL-3.0, the combined
+           application is released under GPL-3.0 as well. All third-party
+           attribution entries of the upstream THIRD_PARTY_LICENSES.md are
+           inherited below in full; see "ADDITIONAL COMPONENTS" for entries
+           added during the Phase 7a license audit.
+
+ZorvAI (former upstream base of OpenAnise-Novel, before 2026-11-07)
   License: Apache-2.0
   Copyright: 2025-2026 Quro AI
   Source:  https://github.com/Quor-a/ZorvAI
-  Note:    OpenAnise-Novel is derived from this codebase (web-novel writing AI
-           Agent positioning). All third-party attribution entries of
-           the upstream NOTICE are inherited below in full; see
-           "ADDITIONAL COMPONENTS" for entries added during the Phase 7a
-           license audit.
+  Note:    OpenAnise-Novel was originally derived from this codebase and was
+           re-based onto OpenMinis on 2026-11-07. Apache-2.0 permits
+           redistribution and relicensing of the ZorvAI portions under GPL-3.0,
+           so this entry is retained unchanged (including the patent and
+           trademark terms that Apache-2.0 grants for those portions) even
+           though the combined work is now GPL-3.0.
 
 OpenAnise-Novel (this application)
-  License: Apache-2.0
+  License: GPL-3.0 (combined work); the ZorvAI portions recorded above keep
+           their original Apache-2.0 notices as Apache-2.0 section 4 requires.
   Source:  https://github.com/qq1375828505/OpenAnise-Novel
 
 AndroidX / Jetpack / Jetpack Compose / Material Components
@@ -453,6 +468,10 @@ the origin of the software.
 
 "OpenAnise-Novel" is the project name of this derivative work. This NOTICE does not
 grant rights to use the upstream trademarks above.
+
+"OpenMinis" and the OpenMinis logo are marks of the OpenMinis project. This
+NOTICE does not grant rights to use them except as required to describe the
+origin of the software.
 
 ----------------------------------------------------------------------
 PENAI PHASE 7a LICENSE AUDIT RECORD (2026-10, maintenance note only)

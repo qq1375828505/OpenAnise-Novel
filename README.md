@@ -6,13 +6,13 @@
 
 ### 运行在 Android 上的网文写作 AI Agent · 把「想故事」变成「可交付章节」
 
-*On-device AI writing agent for Chinese web novels — a seven-stage chapter workflow, 38 writing tools, 25 genre presets and a character-relationship graph, all on your phone.*
+*On-device AI writing agent for Chinese web novels — a seven-stage chapter workflow, composite writing tools, 25 genre presets, 6 sub-agents and a character-relationship graph, all on your phone.*
 
-[![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE)
+[![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](./LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Android--API%2026%2B-3DDC84.svg)](https://developer.android.com)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.3-7F52FF.svg)](https://kotlinlang.org)
-[![Compose](https://img.shields.io/badge/Jetpack%20Compose-1.10.2-4285F4.svg)](https://developer.android.com/compose)
-[![基座](https://img.shields.io/badge/base-ZorvAI%20v1.1.7-8A8A8A.svg)](https://github.com/Quor-a/ZorvAI)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.1.20-7F52FF.svg)](https://kotlinlang.org)
+[![Compose](https://img.shields.io/badge/Jetpack%20Compose-BOM%202025.09.00-4285F4.svg)](https://developer.android.com/compose)
+[![基座](https://img.shields.io/badge/base-OpenMinis-8A8A8A.svg)](https://github.com/OpenMinis/OpenMinis)
 [![CI](https://img.shields.io/github/actions/workflow/status/qq1375828505/OpenAnise-Novel/.github/workflows/build.yml?branch=main)](https://github.com/qq1375828505/OpenAnise-Novel/actions)
 
 </div>
@@ -21,10 +21,10 @@
 
 ## 这是什么
 
-OpenAnise-Novel 是在 **[ZorvAI](https://github.com/Quor-a/ZorvAI)**（Android 端侧 AI Agent 基座，Apache-2.0）之上改造的**网文写作专用 Agent**。
+OpenAnise-Novel 是在 **[OpenMinis](https://github.com/OpenMinis/OpenMinis)**（Android 端侧 AI Agent 基座，GPL-3.0）之上改造的**网文写作专用 Agent**。
 
 - **基座提供**：端侧离线推理（MNN / llama.cpp）、proot 终端、脚本引擎、工具运行时、插件与 ACI 框架、记忆与知识库、通用对话界面。
-- **OpenAnise-Novel 提供**：把「写一章网文」拆成七阶段的领域工作流、40 个写作工具、25 套中文网文流派预设、6 个写作子代理，以及伏笔 / 人物关系 / 记忆三件套图谱。
+- **OpenAnise-Novel 提供**：把「写一章网文」拆成七阶段的领域工作流、6 个注册工具（含 13 个 action）、25 套中文网文流派预设、6 个写作子代理，以及伏笔 / 人物关系 / 记忆三件套图谱。
 - **工程铁律**（承自基座）：**无兜底**（解析失败即抛错，绝不返回假数据）、**断点续跑**（每阶段状态落盘，杀进程可恢复）、**显式契约**（阶段输入输出编码在数据类上，不靠约定俗成）。
 
 > 本项目原代号 **PenAi**，2026-10-22 更名为 Anise Write，2026-11-07 更名为 **OpenAnise-Novel**（应用名、仓库名与文档同步更新；Android 包名与内部模块标识保持不变以保证升级兼容）。
@@ -39,16 +39,20 @@ OpenAnise-Novel 是在 **[ZorvAI](https://github.com/Quor-a/ZorvAI)**（Android 
 
 每个阶段的产出都是强类型数据对象并落盘。某一阶段失败时只把**该阶段**降级为待重跑，其余阶段断点照常恢复——不会因为一处出错丢掉整条进度。
 
-### 四域 40 个写作工具
+### 写作工具（6 个注册工具 / 13 个 action）
 
-| 域 | 数量 | 能力 |
-|---|:--:|---|
-| 结构域 | 13 | 作品 / 卷 / 章 CRUD、大纲读写、章节状态与统计、续写 |
-| 资料域 | 6 | 八类资料（人物/势力/地点/物品/能力/情节线/设定/参考资料）增删改查与 RAG 检索 |
-| 图谱域 | 8 | 伏笔生命周期、人物关系 CRUD 与关系图数据、记忆存取、一致性检查 |
-| 写作域 | 11 | 流派切换与上下文组装、正文写作、标题候选、去 AI 味诊断、双点 / 水字数仪表盘、子代理委托 |
+复合工具走「一个工具名 + `action` 枚举分发」的范式（参照基座 `browser_use`），AICoder 看到的工具面稳定、换代时不必重学：
 
-工具全部走基座的统一注册表（`QuroBuiltInTools` + `coreNames` 白名单），AI 可自主调用，也可由用户手动触发。
+| 注册工具 | action | 覆盖能力 |
+|---|---|---|
+| `novel_write` | list / read / write / search / stats / rule / backup | 章节列举与读写、关键词检索、状态统计、规约读取、章节备份 |
+| `novel_review` | humanize / title / shuangdian / water | 去 AI 味诊断、标题候选、双点仪表盘、水字数报告 |
+| `novel_polish` | prepare / apply | 润色预演与实际落盘（先备稿再改，可回退） |
+| `novel_memory_text` | — | 写作记忆存取（双轨之一） |
+| `novel_memory_link` | — | 记忆关联建链 |
+| `novel_memory_graph` | — | 记忆图谱遍历 |
+
+工具全部走基座的统一注册表（`AgentTools.Builder.add(...)` + `coreNames` 白名单），AI 可自主调用，也可由用户手动触发。
 
 ### 25 套中文网文流派预设
 
@@ -69,17 +73,17 @@ OpenAnise-Novel 是在 **[ZorvAI](https://github.com/Quor-a/ZorvAI)**（Android 
 ## 架构
 
 ```
-┌──────────────── ZorvAI 基座（Apache-2.0，上游可持续同步）────────────────┐
+┌──────────────── OpenMinis 基座（GPL-3.0，上游可持续同步）─────────────────┐
 │ 端侧推理 MNN/llama.cpp · proot 终端 · 脚本引擎 · 工具运行时 · 插件/ACI   │
 │ 记忆与知识库 · 通用对话与设置界面                                         │
 └───────────────────────────────────────────────────────────────────────────┘
                               ▲ 同构扩展（工具域 + 技能套件，不 fork 基座）
 ┌────────────────────────── OpenAnise-Novel 增量层 ──────────────────────────────────┐
 │ core/novel/           领域契约：作品/卷/章 · 资料资产 · 图谱 · 七阶段工作流 │
-│ core/tools/novel/     40 个写作工具（结构 / 资料 / 图谱 / 写作）          │
+│ tools/novel/           复合写作工具（novel_write/review/polish + 记忆三件）│
 │ assets/skills/penai/  25 套流派预设 + manifest                          │
 │ assets/prompts/subagents/ 6 个子代理提示词 + 委托协议                    │
-│ ui/novel/             OpenAnise-Novel 写作界面（原生 Compose）                     │
+│ ui/novel/             写作界面 + 关系图 v2 Canvas（原生 Compose）       │
 └──────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -88,10 +92,10 @@ OpenAnise-Novel 是在 **[ZorvAI](https://github.com/Quor-a/ZorvAI)**（Android 
 | 路径 | 内容 |
 |---|---|
 | `app/src/main/java/com/ai/assistance/quro/core/novel/` | 领域契约层：作品/卷/章模型、资料仓储、图谱存储、工作流模型与编解码（纯 Kotlin，无 Android 依赖，可 JVM 单测） |
-| `app/src/main/java/com/ai/assistance/quro/core/tools/novel/` | 40 个写作工具实现与工具集注册 |
+| `app/src/main/java/com/ai/assistance/quro/tools/` | 复合工具实现与工具集注册（`NovelTools` / `NovelReviewTools` / `NovelPolishTools`） |
 | `app/src/main/assets/skills/penai/` | 25 套流派预设资源包 |
 | `app/src/main/assets/prompts/subagents/` | 子代理提示词与委托协议（`DELEGATION.md`） |
-| `app/src/main/java/com/ai/assistance/quro/ui/novel/` | OpenAnise-Novel 写作界面与设计令牌 |
+| `app/src/main/java/com/ai/assistance/quro/ui/novel/` | 写作界面与设计令牌（`NovelDesign` 为数值单一真相源） |
 | `docs/plan-v1.1/` | 《OpenAnise-Novel 软件改造计划书》（含目标形态、裁剪清单、UI 路线裁决） |
 | `docs/progress/` | 工程恢复方案、阶段落地说明与交接文档 |
 
@@ -150,7 +154,7 @@ cd OpenAnise-Novel
 
 ### CI
 
-`build` 工作流在每次推送后自动执行：`assembleDebug` → `:app:testDebugUnitTest` → 上传 APK 与测试报告 artifact；打 `v*` tag 触发签名发布流程。
+`build` 工作流在每次推送后自动执行：`:app:assembleDebug`（github + store 两风味）→ 上传 APK artifact；打 `v*` tag 触发签名发布流程。单测步骤**当前暂停**：上游测试源码（`app/src/test` 的 `com/openminis/app` 包）在 Kotlin 2.1.20 下编译不过，见 workflow 内注释，适配后恢复。
 
 ## 文档索引
 
@@ -164,13 +168,15 @@ cd OpenAnise-Novel
 
 ## 许可与归属
 
-- OpenAnise-Novel 基于 **ZorvAI**（Apache-2.0）改造，**NOTICE** 完整保留上游与全部第三方归属清单；本项目同样以 Apache-2.0 发布。
+- OpenAnise-Novel 是 **OpenMinis**（GPL-3.0）的衍生作品：基座代码来自 OpenMinis，本项目整体以 **GPL-3.0** 发布（见 [`LICENSE`](./LICENSE)）。
+- **ZorvAI**（Apache-2.0）是本项目早期（2026-11-07 前）的基座。因其为 Apache-2.0 许可，转为 GPL-3.0 发布时**保留其全部版权与归属声明**，见 [`NOTICE`](./NOTICE) 第一段。
+- **NOTICE** 完整保留上游（OpenMinis / ZorvAI）与全部第三方组件（GeckoView / MIT / Apache-2.0 等）的归属清单。GPL-3.0 不排斥附带不同许可证的第三方组件——只要它们自身许可允许再分发，其声明即照原样保留。
+- 界面**视觉范式**参考 OpenMinis 的 iOS 侧实现（`src/ios/`）：**只取布局与数值**（分组列表、inset 分隔线、去饱和 iOS 蓝、彩色圆角图标），实现独立编写，**未复制其代码或素材**；这些数值收敛在 `NovelDesign`（`design_tokens.json` 为数值真相源）。视觉范式不构成 GPL-3.0 意义上的「衍生」，但承 GPL 发布更稳，故不拆分许可。
 - 领域资产来源 **novelIDE**（MIT）：仅参考其**信息架构与交互范式**，**未移植其 Flutter 代码**；若后续引入代码，须按 MIT 要求保留版权声明。
-- 第三方组件（GeckoView / MPN-2.0 等）各自遵循其许可证，见 [`NOTICE`](./NOTICE) 与 [`LICENSE`](./LICENSE)。
 
 ## 参与贡献
 
-Issue 与 PR 欢迎。改动请遵守：本地不提交二进制产物与预编译原生库（`fdroid` 风味须保持「仓库内无预编译二进制」）、不提交签名凭证（`keystore.properties` / `*.jks` / `*.p12` 一律不入库）、提交信息采用 `[Phase N] 模块: 描述` 格式。
+Issue 与 PR 欢迎。改动请遵守：本地不提交二进制产物与预编译原生库（`fdroid` 风味须保持「仓库内无预编译二进制」）、不提交签名凭证（`keystore.properties` / `*.jks` / `*.p12` 一律不入库）、提交信息采用 `[T-xxx] 模块: 描述` 格式。
 
 ## 关键词
 
