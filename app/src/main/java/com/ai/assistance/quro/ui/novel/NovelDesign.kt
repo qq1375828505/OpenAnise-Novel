@@ -1,6 +1,5 @@
 package com.ai.assistance.quro.ui.novel
 
-import androidx.compose.foundation.isSystemInLightTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
@@ -8,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.ai.assistance.quro.ui.theme.LocalChatPalette
 
 /**
  * OpenAnise-Novel 设计令牌单一真相源。
@@ -82,7 +82,7 @@ val NovelDanger: Color
     @Composable @ReadOnlyComposable get() = if (isDark) Color(0xFFFF453A) else Color(0xFFFF3B30)
 
 private val isDark: Boolean
-    @Composable @ReadOnlyComposable get() = !isSystemInLightTheme()
+    @Composable @ReadOnlyComposable get() = LocalChatPalette.current.isDark
 
 /**
  * 关系类别调色板（design_tokens.json §color.categoryPalette）。
